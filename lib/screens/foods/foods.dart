@@ -110,13 +110,14 @@ class _FoodsPageState extends State<FoodsPage> {
                   cells: [
                     DataCell(Text((index + 1).toString())),
                     DataCell(IconButton(onPressed: (){
-                      foodController.foods.value = widget.foodModel;
-                      foodController.alertDialog();
+                      alertDialog(widget.foodModel[index]);
                     },icon: Icon(Icons.edit),)),
-                    DataCell(IconButton(onPressed: (){},icon: Icon(Icons.delete),)),
+                    DataCell(IconButton(onPressed: (){
+                      foodController.delete(widget.foodModel[index]);
+                    },icon: Icon(Icons.delete),)),
                     DataCell(
                       Image.network(
-                        element.photourl[0]  ,
+                        element.photourl  ,
                         height: 120,
                         width: 120,
                       ),
@@ -135,5 +136,168 @@ class _FoodsPageState extends State<FoodsPage> {
     ),),
     )
     );
+  }
+  alertDialog(FoodModel fooditem){
+    return
+      Get.defaultDialog(
+          backgroundColor: secondaryColor,
+          title: 'Edit',
+          content: SingleChildScrollView(
+            child:
+                Column(
+                    children: [
+                      Card(
+                        color: secondaryColor,
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller:foodController.foodNameController ,
+                            decoration: InputDecoration(
+                                hintText: fooditem.name),
+                          ),
+                        ),
+                      ),
+                      Card(
+                        color: secondaryColor,
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.all(8.0),
+                          child: ListTile(
+                              title: Text(
+                                  'Select Food image :'),
+                              trailing: TextButton(
+                                onPressed: (){
+                                  foodController.uploadToStorage(fileName: foodController.foodNameController.text == '' ? 'Name' :  foodController.foodNameController.text);
+                                },
+                                child: Text('Image'),
+                              )
+                          ),
+                        ),
+                      ),
+                      // Card(
+                      //   color: secondaryColor,
+                      //   child: Padding(
+                      //     padding:
+                      //     const EdgeInsets.all(8.0),
+                      //     child: TextField(
+                      //       onChanged: (value){
+                      //         setState(() {
+                      //           locationSetController.locationSet = value;
+                      //         });
+                      //       },
+                      //       controller:locationSetController.locationController ,
+                      //       decoration: InputDecoration(
+                      //           hintText: 'Delivery Boys'),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Card(
+                      //   color: secondaryColor,
+                      //   child: Padding(
+                      //     padding:
+                      //     const EdgeInsets.all(8.0),
+                      //     child: TextField(
+                      //       onChanged: (value){
+                      //         setState(() {
+                      //           locationSetController.locationSet = value;
+                      //         });
+                      //       },
+                      //       controller:locationSetController.locationController ,
+                      //       decoration: InputDecoration(
+                      //           hintText: 'Delivery Fee'),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Card(
+                      //   color: secondaryColor,
+                      //   child: Padding(
+                      //     padding:
+                      //     const EdgeInsets.all(8.0),
+                      //     child: TextField(
+                      //       onChanged: (value){
+                      //         setState(() {
+                      //           locationSetController.locationSet = value;
+                      //         });
+                      //       },
+                      //       controller:locationSetController.locationController ,
+                      //       decoration: InputDecoration(
+                      //           hintText: 'Delivery Range'),
+                      //     ),
+                      //   ),
+                      // ),
+                      // Card(
+                      //   color: secondaryColor,
+                      //   child: Padding(
+                      //     padding:
+                      //     const EdgeInsets.all(8.0),
+                      //     child: TextField(
+                      //       onChanged: (value){
+                      //         setState(() {
+                      //           locationSetController.locationSet = value;
+                      //         });
+                      //       },
+                      //       controller:locationSetController.locationController ,
+                      //       decoration: InputDecoration(
+                      //           hintText: 'Tax of the restaurant'),
+                      //     ),
+                      //   ),
+                      // ),
+                      Card(
+                        color: secondaryColor,
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller:foodController.priceController ,
+                            decoration: InputDecoration(
+                                hintText: fooditem.price),
+                          ),
+                        ),
+                      ), Card(
+                        color: secondaryColor,
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller:foodController.weightController,
+                            decoration: InputDecoration(
+                                hintText: fooditem.weight),
+                          ),
+                        ),
+                      ),
+                      // Card(
+                      //   color: secondaryColor,
+                      //   child: Padding(
+                      //     padding:
+                      //     const EdgeInsets.all(8.0),
+                      //     child: TextField(
+                      //       onChanged: (value){
+                      //         setState(() {
+                      //           locationSetController.locationSet = value;
+                      //         });
+                      //       },
+                      //       controller:locationSetController.locationController ,
+                      //       decoration: InputDecoration(
+                      //           hintText: 'Admin Commission'),
+                      //     ),
+                      //   ),
+                      // ),
+                      InkWell(
+                        onTap: (){
+                         foodController. edit(fooditem);
+                        },
+                        child: Card(
+                          color: Colors.blue,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Save',),
+                          ),
+                        ),),
+                    ],
+
+                            ),
+          )
+      );
   }
 }

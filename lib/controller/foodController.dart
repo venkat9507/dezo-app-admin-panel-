@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 import 'package:firebase/firebase.dart' as fb;
 
@@ -30,171 +31,7 @@ class FoodController extends GetxController {
   //     .toList());
 
 
-  alertDialog(){
-    return
-        Get.defaultDialog(
-          backgroundColor: secondaryColor,
-          title: 'Edit',
-          content: SingleChildScrollView(
-            child: Column(
-              children: foods.asMap().map((index, element) => MapEntry(index, SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Card(
-                      color: secondaryColor,
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller:foodController.foodNameController ,
-                          decoration: InputDecoration(
-                              hintText: element.name),
-                        ),
-                      ),
-                    ),
-                    Card(
-                      color: secondaryColor,
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.all(8.0),
-                        child: ListTile(
-                            title: Text(
-                                'Select Food image :'),
-                            trailing: TextButton(
-                              onPressed: (){
-                                uploadToStorage(fileName: foodNameController.text == '' ? 'Name' : foodNameController.text);
-                              },
-                              child: Text('Image'),
-                            )
-                        ),
-                      ),
-                    ),
-                    // Card(
-                    //   color: secondaryColor,
-                    //   child: Padding(
-                    //     padding:
-                    //     const EdgeInsets.all(8.0),
-                    //     child: TextField(
-                    //       onChanged: (value){
-                    //         setState(() {
-                    //           locationSetController.locationSet = value;
-                    //         });
-                    //       },
-                    //       controller:locationSetController.locationController ,
-                    //       decoration: InputDecoration(
-                    //           hintText: 'Delivery Boys'),
-                    //     ),
-                    //   ),
-                    // ),
-                    // Card(
-                    //   color: secondaryColor,
-                    //   child: Padding(
-                    //     padding:
-                    //     const EdgeInsets.all(8.0),
-                    //     child: TextField(
-                    //       onChanged: (value){
-                    //         setState(() {
-                    //           locationSetController.locationSet = value;
-                    //         });
-                    //       },
-                    //       controller:locationSetController.locationController ,
-                    //       decoration: InputDecoration(
-                    //           hintText: 'Delivery Fee'),
-                    //     ),
-                    //   ),
-                    // ),
-                    // Card(
-                    //   color: secondaryColor,
-                    //   child: Padding(
-                    //     padding:
-                    //     const EdgeInsets.all(8.0),
-                    //     child: TextField(
-                    //       onChanged: (value){
-                    //         setState(() {
-                    //           locationSetController.locationSet = value;
-                    //         });
-                    //       },
-                    //       controller:locationSetController.locationController ,
-                    //       decoration: InputDecoration(
-                    //           hintText: 'Delivery Range'),
-                    //     ),
-                    //   ),
-                    // ),
-                    // Card(
-                    //   color: secondaryColor,
-                    //   child: Padding(
-                    //     padding:
-                    //     const EdgeInsets.all(8.0),
-                    //     child: TextField(
-                    //       onChanged: (value){
-                    //         setState(() {
-                    //           locationSetController.locationSet = value;
-                    //         });
-                    //       },
-                    //       controller:locationSetController.locationController ,
-                    //       decoration: InputDecoration(
-                    //           hintText: 'Tax of the restaurant'),
-                    //     ),
-                    //   ),
-                    // ),
-                    Card(
-                      color: secondaryColor,
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller:foodController.priceController ,
-                          decoration: InputDecoration(
-                              hintText: element.price),
-                        ),
-                      ),
-                    ), Card(
-                      color: secondaryColor,
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.all(8.0),
-                        child: TextField(
-                          controller:foodController.weightController,
-                          decoration: InputDecoration(
-                              hintText: element.weight),
-                        ),
-                      ),
-                    ),
-                    // Card(
-                    //   color: secondaryColor,
-                    //   child: Padding(
-                    //     padding:
-                    //     const EdgeInsets.all(8.0),
-                    //     child: TextField(
-                    //       onChanged: (value){
-                    //         setState(() {
-                    //           locationSetController.locationSet = value;
-                    //         });
-                    //       },
-                    //       controller:locationSetController.locationController ,
-                    //       decoration: InputDecoration(
-                    //           hintText: 'Admin Commission'),
-                    //     ),
-                    //   ),
-                    // ),
-                    InkWell(
-                      onTap: (){
-                        save();
-                      },
-                      child: Card(
-                        color: Colors.blue,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Save',),
-                        ),
-                      ),),
-                  ],
-                ),
-              ))).values.toList()
-            ),
-          )
-        );
-  }
+
   void uploadImage({@required Function(File file) onSelected}) {
     InputElement uploadInput = FileUploadInputElement();
     uploadInput.click();
@@ -270,8 +107,10 @@ class FoodController extends GetxController {
           weightController.text = '';
           update();
           print('restaurant Updated');
+          Future.delayed(Duration(milliseconds: 1000),(){
+            Get.to(OffersPage());
+          });
 
-          Get.to(OffersPage());
         });
 
     }
@@ -285,4 +124,63 @@ class FoodController extends GetxController {
     }
   }
 
+  delete(FoodModel food)async{
+    // String docid = ;
+    String img = image.value;
+    // print(docid);
+      return
+        await  FirebaseFirestore.instance.collection('dezo').doc(restaurantController.docID.value).collection('restaurants').doc(docID.value).update({
+
+          "food": FieldValue.arrayRemove([
+            {
+              'category': food.category,
+              "count": food.count,
+              "discountprice": food.discountprice,
+              "featured": food.featured,
+              "isdeliverable": food.isdeliverable,
+              "name": food.name,
+              "ondiscount": food.ondiscount,
+              "photo_url": food.photourl,
+              'price': food.price,
+              'unit':food.unit,
+              'weight': food.weight,
+            }
+          ])
+        }).then((value) {
+          Get.snackbar('deleted', 'food deleted');
+          print('restaurant Updated');
+          Future.delayed(Duration(milliseconds: 1000),(){
+            Get.to(OffersPage());
+          });
+
+        });
+  }
+  edit(FoodModel food)async{
+    // String docid = ;
+    String img = image.value;
+    // print(docid);
+    return
+      await  FirebaseFirestore.instance.collection('dezo').doc(restaurantController.docID.value).collection('restaurants').doc(docID.value).update({
+
+        "food": FieldValue.arrayUnion([
+          {
+            'category': food.category,
+            "count": food.count,
+            "discountprice": food.discountprice,
+            "featured": food.featured,
+            "isdeliverable": food.isdeliverable,
+            "name": foodNameController.text != '' ? foodNameController.text : food.name,
+            "ondiscount": food.ondiscount,
+            "photo_url": img == null ? food.photourl : img,
+            'price': priceController.text != '' ? priceController.text : food.price,
+            'unit':food.unit,
+            'weight': weightController.text != '' ? weightController.text : food.weight ,
+          }
+        ])
+      }).then((value) {
+        Get.snackbar('Edited', 'food Updated');
+        print('restaurant Updated');
+
+      });
+  }
 }
