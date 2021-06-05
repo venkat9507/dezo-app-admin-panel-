@@ -50,76 +50,88 @@ class _FoodsPageState extends State<FoodsPage> {
         ],
       ),
       body: SafeArea(child:Center(
-    child: Column(
-    children: [
-    Text(foodController.docID.value, style: Theme.of(context).textTheme.title),
-    Column(
-    children: [
-    SingleChildScrollView(
-      child: DataTable(
-        columnSpacing: size.width * 0.2,
-      showCheckboxColumn: false,
-      columns: [
-      DataColumn(
-      label: Text('SI.No'),
+    child: Obx(
+      ()=> Column(
+      children: [
+      Text(foodController.docID.value, style: Theme.of(context).textTheme.title),
+      Column(
+      children: [
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          columnSpacing: size.width * 0.1,
+        showCheckboxColumn: false,
+        columns: [
+        DataColumn(
+        label: Text('SI.No'),
+        ),
+          DataColumn(
+            label: Text('Edit'),
+          ),
+          DataColumn(
+            label: Text('Delete'),
+          ),
+        DataColumn(
+          label: Text('Image'),
+        ),
+        DataColumn(
+        label: Text('Food Name'),
+        ),
+        DataColumn(
+        label: Text('Price'),
+        ),
+        DataColumn(
+        label: Text('Quantity'),
+        ),
+        // DataColumn(
+        //   label: Text('Available Stock'),
+        // ),
+        // DataColumn(
+        //   label: Text('On sale'),
+        // ),
+        // DataColumn(
+        //   label: Text('Offer Price'),
+        // ),
+        // DataColumn(
+        //   label: Text('Description'),
+        // ),
+        // DataColumn(
+        //   label: Text('Category'),
+        // ),
+        // DataColumn(
+        //   label: Text('Actions'),
+        // ),
+        ],
+        rows: widget.foodModel.asMap().map(
+              (index, element) => MapEntry(index, DataRow(
+                  // onSelectChanged: (value){
+                  //
+                  // },
+                  cells: [
+                    DataCell(Text((index + 1).toString())),
+                    DataCell(IconButton(onPressed: (){
+                      foodController.foods.value = widget.foodModel;
+                      foodController.alertDialog();
+                    },icon: Icon(Icons.edit),)),
+                    DataCell(IconButton(onPressed: (){},icon: Icon(Icons.delete),)),
+                    DataCell(
+                      Image.network(
+                        element.photourl[0]  ,
+                        height: 120,
+                        width: 120,
+                      ),
+                    ),
+                    DataCell(Text(element.name,style: TextStyle(fontSize: size.height * 0.02),)),
+                    DataCell(Text(element.price)),
+                    DataCell(Text(element.weight.toString())),
+                  ]),)
+        ).values.toList(),
+        ),
       ),
-      // DataColumn(
-      //   label: Text('Image'),
-      // ),
-      DataColumn(
-      label: Text('Food Name'),
-      ),
-      DataColumn(
-      label: Text('Price'),
-      ),
-      DataColumn(
-      label: Text('Quantity'),
-      ),
-      // DataColumn(
-      //   label: Text('Available Stock'),
-      // ),
-      // DataColumn(
-      //   label: Text('On sale'),
-      // ),
-      // DataColumn(
-      //   label: Text('Offer Price'),
-      // ),
-      // DataColumn(
-      //   label: Text('Description'),
-      // ),
-      // DataColumn(
-      //   label: Text('Category'),
-      // ),
-      // DataColumn(
-      //   label: Text('Actions'),
-      // ),
       ],
-      rows: widget.foodModel
-          .map(
-      (element) => DataRow(
-      onSelectChanged: (value){
-
-      },
-      cells: [
-      DataCell(Text('1')),
-      // DataCell(
-      //   Image.network(
-      //      element.photourl[0]  ,
-      //     height: 120,
-      //     width: 120,
-      //   ),
-      // ),
-      DataCell(Text(element.name,style: TextStyle(fontSize: size.height * 0.02),)),
-      DataCell(Text(element.price)),
-      DataCell(Text(element.weight.toString())),
-      ]),
-      )
-          .toList(),
       ),
-    ),
-    ],
-    ),
-    ],
+      ],
+      ),
     ),),
     )
     );
