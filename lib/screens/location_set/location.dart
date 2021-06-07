@@ -1,4 +1,5 @@
 import 'package:digimartadmin/constants/controllers.dart';
+import 'package:digimartadmin/models/locationmodel.dart';
 import 'package:digimartadmin/screens/location_set/location_set.dart';
 import 'package:digimartadmin/screens/restaurant_set/restaurants.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class OffersPage extends StatefulWidget {
 class _OffersPageState extends State<OffersPage> {
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
           child: Obx(
@@ -29,6 +31,7 @@ class _OffersPageState extends State<OffersPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
+
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
@@ -44,6 +47,7 @@ class _OffersPageState extends State<OffersPage> {
                       ),
                       child: IconButton(
                         onPressed: (){
+
                           Get.to(LocationSet());
                         },
                         icon: Icon( Icons.add),
@@ -58,32 +62,35 @@ class _OffersPageState extends State<OffersPage> {
                 itemCount: locationController.locations.length,
                 shrinkWrap: true,
                 gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                    SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
                 itemBuilder: (context, index) {
                   var data = locationController.locations[index];
                   print(data);
                   return Container(
                     color: secondaryColor,
                     child: InkWell(
+                      onLongPress: (){
+                        deleteLocation(data);
+                      },
                       onTap: () {
                         // restaurantController.restaurants.clear();
                         restaurantController.restaurants.bindStream(
                             restaurantController.getrestaurants(data.name));
                         restaurantController.docID.value = data.name;
-                        print( restaurantController.docID.value);
+                        // print( restaurantController.docID.value);
                         Get.to(() => RestaurantsPage());
                       },
                       child: Card(
-                        color: bgColor,
+                        color: Colors.pink,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 100),
+                          padding: const EdgeInsets.symmetric(horizontal: 80),
                           child: Center(
                             child: ListTile(
 
-                              title: Text(data.name.toUpperCase()),
+                              title: Text(data.name.toUpperCase(),style: TextStyle(color: Colors.white,fontSize: size.height * 0.02),),
                               subtitle: Text(data.code.toUpperCase(),
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.overline),
+                                  // overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(color: Colors.white,fontSize: size.height * 0.01),),
                             ),
                           ),
                         ),
@@ -115,6 +122,28 @@ class _OffersPageState extends State<OffersPage> {
           ),
         ),
       )),
+    );
+  }
+  deleteLocation(LocationModel locationModel){
+    Get.defaultDialog(
+      title: 'Warning',
+      content: Column(
+        children: [
+          Text('Are you sure you want to  delete this Location !!'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(onPressed: (){
+                Get.back();
+              }, child: Text('Cancel'),),
+              TextButton(onPressed: (){
+                locationController.delete(locationModel);
+              }, child: Text('OK'),),
+
+            ],
+          )
+        ],
+      )
     );
   }
 }

@@ -42,4 +42,8 @@ class LocationController extends GetxController {
         });
     }
   }
+  delete(LocationModel locationModels)async{
+    return
+        await FirebaseFirestore.instance.collection('dezo').doc(locationModels.name).delete();
+  }
 }

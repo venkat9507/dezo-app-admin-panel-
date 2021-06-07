@@ -53,6 +53,18 @@ class _RestaurantState extends State<Restaurant> {
             child: Padding(
               padding:
               const EdgeInsets.all(8.0),
+              child: TextField(
+                controller:restaurantController.restaurantIDController ,
+                decoration: InputDecoration(
+                    hintText: ' Restaurant ID'),
+              ),
+            ),
+          ),
+          Card(
+            color: secondaryColor,
+            child: Padding(
+              padding:
+              const EdgeInsets.all(8.0),
               child: ListTile(
                 title: Text(
                     'Select restaurant image :'),

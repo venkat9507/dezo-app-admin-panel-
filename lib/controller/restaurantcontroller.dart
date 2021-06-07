@@ -15,6 +15,7 @@ class RestaurantController extends GetxController {
   TextEditingController restaurantNameController = TextEditingController();
   TextEditingController restaurantPhoneController = TextEditingController();
   TextEditingController restaurantAddressController = TextEditingController();
+  TextEditingController restaurantIDController = TextEditingController();
   RxString image = ''.obs;
   RxString docID= ''.obs;
   
@@ -28,7 +29,12 @@ class RestaurantController extends GetxController {
           .toList());
 
 
+@override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
 
+  }
   void uploadImage({@required Function(File file) onSelected}) {
     InputElement uploadInput = FileUploadInputElement();
     uploadInput.click();
@@ -80,12 +86,13 @@ class RestaurantController extends GetxController {
     String img = image.value;
     print(docid);
     if(
-    restaurantNameController.text != '' && restaurantPhoneController.text != '' && restaurantAddressController.text != '') {
+    restaurantNameController.text != '' && restaurantPhoneController.text != '' && restaurantAddressController.text != '' && restaurantIDController.text != '') {
       return
-        await  FirebaseFirestore.instance.collection('dezo').doc(docid).collection('restaurants').doc(restaurantNameController.text).set({
+        await  FirebaseFirestore.instance.collection('dezo').doc(docid).collection('restaurants').doc(restaurantIDController.text).set({
           'name': restaurantNameController.text,
           'phone': restaurantPhoneController.text,
           'address': restaurantAddressController.text,
+          'restaurantID': restaurantIDController.text,
           'closed': false,
           'deliveryrange': '',
           'latitude':'',
@@ -137,6 +144,8 @@ class RestaurantController extends GetxController {
     String img = image.value;
     print(docid);
     await  FirebaseFirestore.instance.collection('dezo').doc(docid).collection('restaurants').doc(element.name).update({
+      'name': restaurantNameController.text == '' ? element.name : restaurantNameController.text,
+      'restaurantID': restaurantIDController.text == '' ? element.restaurantId : restaurantIDController.text,
       'phone':  restaurantPhoneController.text == '' ? element.phone : restaurantPhoneController.text,
       'address':  restaurantAddressController.text == '' ? element.address : restaurantAddressController.text,
       // "food": FieldValue.arrayUnion([

@@ -10,6 +10,7 @@ class RestaurantModel {
   static const TAX = 'tax';
   static const USERNAME = 'username';
   static const FOOD = 'food';
+  static const restaurantID = 'restaurantID';
 
   // List<Product> productList = [];
   String address;
@@ -22,6 +23,7 @@ class RestaurantModel {
   String phone;
   var tax;
   String username;
+  String restaurantId;
   List<FoodModel> food;
   RestaurantModel(
       {this.address,
@@ -34,6 +36,7 @@ class RestaurantModel {
       this.tax,
       this.username,
         this.image,
+        this.restaurantId,
       this.food});
 
   List<FoodModel> _convertfood(List food) {
@@ -57,6 +60,7 @@ class RestaurantModel {
     tax = data[TAX];
     username = data[USERNAME];
     image = data[PHOTOURL];
+    restaurantId = data[restaurantID];
     food = _convertfood(data[FOOD] ?? []);
   }
 }

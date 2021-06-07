@@ -77,6 +77,9 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                           label: Text('Name'),
                         ),
                         DataColumn(
+                          label: Text('ID'),
+                        ),
+                        DataColumn(
                           label: Text('Phone'),
                         ),
                         DataColumn(
@@ -144,6 +147,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                                         ),
                                       ),
                                       DataCell(Text(element.name)),
+                                      DataCell(Text(element.restaurantId)),
                                       DataCell(Text(element.phone)),
                                       DataCell(
                                           Text(element.address.toString())),
