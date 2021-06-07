@@ -5,8 +5,10 @@ import 'package:digimartadmin/constants/constants.dart';
 import 'package:digimartadmin/screens/location_set/location.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase/firebase.dart' as fb;
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../constants.dart';
 import '../../constants/controllers.dart';
 import '../../constants/controllers.dart';
@@ -24,7 +26,7 @@ class Restaurant extends StatefulWidget {
 }
 
 class _RestaurantState extends State<Restaurant> {
-  List<DataRow> dataRows = [];
+      List<DataRow> dataRows = [];
   List location = ['demo','All','chcek'];
   String dropdownValue = 'All';
   String image;
@@ -57,6 +59,20 @@ class _RestaurantState extends State<Restaurant> {
                 controller:restaurantController.restaurantIDController ,
                 decoration: InputDecoration(
                     hintText: ' Restaurant ID'),
+              ),
+            ),
+          ),
+          Card(
+            color: secondaryColor,
+            child: Padding(
+              padding:
+              const EdgeInsets.all(8.0),
+              child: TextField(
+                controller:restaurantController.restaurantPinCodeController ,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                    hintText: ' Restaurant Deliverable PinCode'),
+                inputFormatters:restaurantController.maskFormatter,
               ),
             ),
           ),

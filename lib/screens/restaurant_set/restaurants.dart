@@ -3,6 +3,7 @@ import 'package:digimartadmin/models/restaurantmodel.dart';
 import 'package:digimartadmin/screens/foods/foods.dart';
 import 'package:digimartadmin/screens/restaurant_set/restaurant_adding_displaying.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -14,6 +15,7 @@ class RestaurantsPage extends StatefulWidget {
 }
 
 class _RestaurantsPageState extends State<RestaurantsPage> {
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -85,6 +87,9 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                         DataColumn(
                           label: Text('Address'),
                         ),
+                        DataColumn(
+                          label: Text('Restaurant Deliverable PinCode'),
+                        ),
                         // DataColumn(
                         //   label: Text('Available Stock'),
                         // ),
@@ -146,11 +151,13 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                                           ),
                                         ),
                                       ),
-                                      DataCell(Text(element.name)),
+                                      DataCell(Text(element.name )),
                                       DataCell(Text(element.restaurantId)),
                                       DataCell(Text(element.phone)),
                                       DataCell(
                                           Text(element.address.toString())),
+                                      DataCell(
+                                          Text(element.restaurantPin.toString().replaceAll('[', '').replaceAll(']', ''))),
                                     ]),
                               ))
                           .values
@@ -172,16 +179,27 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         content: SingleChildScrollView(
           child: Column(
             children: [
-              // Card(
-              //   color: secondaryColor,
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(8.0),
-              //     child: TextField(
-              //       controller: restaurantController.restaurantNameController,
-              //       decoration: InputDecoration(hintText: ' Restaurant Name'),
-              //     ),
-              //   ),
-              // ),
+              Card(
+                color: secondaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: restaurantController.restaurantNameController,
+                    decoration: InputDecoration(hintText: ' Restaurant Name'),
+                  ),
+                ),
+              ),
+              Card(
+                color: secondaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: restaurantController.restaurantPinCodeController,
+                    decoration: InputDecoration(hintText: ' Restaurant Pin Codes'),
+                    inputFormatters: restaurantController.maskFormatter,
+                  ),
+                ),
+              ),
               Card(
                 color: secondaryColor,
                 child: Padding(
@@ -204,6 +222,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                       ),),
                 ),
               ),
+
               // Card(
               //   color: secondaryColor,
               //   child: Padding(

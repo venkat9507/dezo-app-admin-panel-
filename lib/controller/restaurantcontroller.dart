@@ -7,15 +7,19 @@ import 'package:digimartadmin/models/restaurantmodel.dart';
 import 'package:digimartadmin/screens/location_set/location.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class RestaurantController extends GetxController {
   static RestaurantController instance = Get.find();
   RxList<RestaurantModel> restaurants = RxList<RestaurantModel>([]);
+  RxList<String> restaurantsPinCodes = RxList<String>([]);
   TextEditingController restaurantNameController = TextEditingController();
   TextEditingController restaurantPhoneController = TextEditingController();
   TextEditingController restaurantAddressController = TextEditingController();
   TextEditingController restaurantIDController = TextEditingController();
+  TextEditingController restaurantPinCodeController = TextEditingController();
+  var maskFormatter =                   [FilteringTextInputFormatter.allow(RegExp('[0-9,]')),];
   RxString image = ''.obs;
   RxString docID= ''.obs;
   
@@ -80,19 +84,26 @@ class RestaurantController extends GetxController {
     });
   }
 
+check(){
 
+}
   save()async{
     String docid = docID.value;
     String img = image.value;
     print(docid);
     if(
-    restaurantNameController.text != '' && restaurantPhoneController.text != '' && restaurantAddressController.text != '' && restaurantIDController.text != '') {
+    restaurantNameController.text != '' && restaurantPhoneController.text != '' && restaurantAddressController.text != '' && restaurantPinCodeController.text != '' && restaurantIDController.text != '') {
+      restaurantPinCodeController.text.split(',').forEach((element) {
+        restaurantsPinCodes.add(element);
+        print(restaurantsPinCodes);
+      });
       return
         await  FirebaseFirestore.instance.collection('dezo').doc(docid).collection('restaurants').doc(restaurantIDController.text).set({
           'name': restaurantNameController.text,
           'phone': restaurantPhoneController.text,
           'address': restaurantAddressController.text,
           'restaurantID': restaurantIDController.text,
+          'restaurantPinCodes': restaurantsPinCodes,
           'closed': false,
           'deliveryrange': '',
           'latitude':'',
@@ -115,11 +126,15 @@ class RestaurantController extends GetxController {
           //     'weight': '',
           //   }
           // ])
-        }).then((value) {
+        }).then((value) async{
           restaurantNameController.text  ='';
           restaurantPhoneController.text = '';
           restaurantAddressController.text = '';
-          update();
+          await  FirebaseFirestore.instance.collection('dezo').doc('restaurantID').set({
+                'restaurantID': FieldValue.arrayUnion(
+                  [restaurantIDController.text],
+                ),
+              },SetOptions(merge: true));
           print('restaurant Updated');
           Get.snackbar('Updated', 'Restaurant Updated');
           Future.delayed(Duration(milliseconds: 1000),(){
@@ -140,11 +155,19 @@ class RestaurantController extends GetxController {
 
   edited(RestaurantModel element)async{
     print('elementName ${element.name}');
+    print('textController ${restaurantPinCodeController.text}');
     String docid = docID.value;
     String img = image.value;
+    restaurantPinCodeController.text.split(',').forEach((element) {
+      restaurantsPinCodes.add(element);
+      print(restaurantsPinCodes);
+    },
+    );
     print(docid);
-    await  FirebaseFirestore.instance.collection('dezo').doc(docid).collection('restaurants').doc(element.name).update({
+
+    await  FirebaseFirestore.instance.collection('dezo').doc(docid).collection('restaurants').doc(element.restaurantId).update({
       'name': restaurantNameController.text == '' ? element.name : restaurantNameController.text,
+      'restaurantPinCodes': restaurantPinCodeController.text == '' ? element.restaurantPin : restaurantsPinCodes,
       'restaurantID': restaurantIDController.text == '' ? element.restaurantId : restaurantIDController.text,
       'phone':  restaurantPhoneController.text == '' ? element.phone : restaurantPhoneController.text,
       'address':  restaurantAddressController.text == '' ? element.address : restaurantAddressController.text,

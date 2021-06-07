@@ -18,45 +18,42 @@ class _OffersPageState extends State<OffersPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: bgColor,
+        elevation: 0,
+        title:  Text('Locations', style: Theme.of(context).textTheme.title),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 2.0,
+                    spreadRadius: 0.0,
+                    offset: Offset(2.0, 2.0), // shadow direction: bottom right
+                  )
+                ],
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Get.to(LocationSet());
+                },
+                icon: Icon(Icons.add),
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
       body: Center(
           child: Obx(
         () => SingleChildScrollView(
           child: Column(
             children: [
-
-              Text('Locations', style: Theme.of(context).textTheme.title),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 2.0,
-                            spreadRadius: 0.0,
-                            offset: Offset(2.0,
-                                2.0), // shadow direction: bottom right
-                          )
-                        ],
-                      ),
-                      child: IconButton(
-                        onPressed: (){
-
-                          Get.to(LocationSet());
-                        },
-                        icon: Icon( Icons.add),
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               GridView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: locationController.locations.length,
@@ -66,14 +63,15 @@ class _OffersPageState extends State<OffersPage> {
                 itemBuilder: (context, index) {
                   var data = locationController.locations[index];
                   print(data);
-                  return Container(
+                  return
+                    data.name == null ? Container() :   Container(
                     color: secondaryColor,
                     child: InkWell(
                       onLongPress: (){
                         deleteLocation(data);
                       },
                       onTap: () {
-                        // restaurantController.restaurants.clear();
+                        restaurantController.restaurants.clear();
                         restaurantController.restaurants.bindStream(
                             restaurantController.getrestaurants(data.name));
                         restaurantController.docID.value = data.name;
@@ -87,7 +85,7 @@ class _OffersPageState extends State<OffersPage> {
                           child: Center(
                             child: ListTile(
 
-                              title: Text(data.name.toUpperCase(),style: TextStyle(color: Colors.white,fontSize: size.height * 0.02),),
+                              title: Text( data.name.toUpperCase(),style: TextStyle(color: Colors.white,fontSize: size.height * 0.02),),
                               subtitle: Text(data.code.toUpperCase(),
                                   // overflow: TextOverflow.ellipsis,
                                   style: TextStyle(color: Colors.white,fontSize: size.height * 0.01),),
@@ -138,6 +136,9 @@ class _OffersPageState extends State<OffersPage> {
               }, child: Text('Cancel'),),
               TextButton(onPressed: (){
                 locationController.delete(locationModel);
+                Future.delayed(Duration(milliseconds: 1000),(){
+                  Get.back();
+                });
               }, child: Text('OK'),),
 
             ],
